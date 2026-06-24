@@ -34,3 +34,26 @@ class Model(nn.Module):
         x=torch.softmax(self.output(x),dim=-1)
 
         return x
+
+#模型训练
+def train():
+    #创建模型对象
+    my_model=Model()
+    #创建数据样本
+    data=torch.randn(size=(5,3))
+    #调用神经网络，进行模型训练
+    output=my_model(data)
+    print(output)
+    print(output.shape)
+    print(output.requires_grad)
+
+    #查看模型参数
+    summary(my_model,(5,3))
+    print(my_model.parameters())
+    for name,param in my_model.named_parameters():
+        print(f'name:{name}')
+        print(f'param:{param}')
+
+
+if __name__=='__main__':
+    train()
