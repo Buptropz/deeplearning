@@ -53,6 +53,37 @@ class phoneprice(nn.Module):
         x=self.output(x)
         return x
 
+def train(train_dataset,input_dim,output_dim):
+    #创建数据加载器
+    train_loader=DataLoader(train_dataset,batch_size=16,shuffle=True)
+    #创建模型对象
+    model1=phoneprice(input_dim,output_dim)
+    #定义损失函数和优化器
+    criterion=nn.CrossEntropyLoss ()
+    optimizer=optim.SGD(model1.parameters(),lr=0.01)
+    #开始训练
+    for epoch in range(50):
+        total_loss=0.0
+        batch_num = 0
+        start=time.time()
+        for x,y in train_loader:
+            model1.train()
+            y_pred=model1(x)
+            loss=criterion(y_pred,y)
+            #优化参数
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            #累计损失
+            total_loss+=loss.item()
+            batch_num+=1
+
+        print(f'epoch:{epoch + 1},loss:{total_loss / batch_num:.4f},time:{time.time() - start:.2f}s')
+    #保存模型(保存模型参数)
+    #参数: 模型参数,保存路径
+    print(f'\n\n模型参数学习：{model1.state_dict()}\n\n')
+    torch.save(model1.state_dict(),'./model/手机价格分类.pth')
 
 
 if __name__ == '__main__':
@@ -61,4 +92,6 @@ if __name__ == '__main__':
     #2.创建数据加载器
     model = phoneprice(input_dim, output_dim)
     #3.计算模型参数
-    summary(model,input_size=(16,input_dim))
+    #summary(model,input_size=(16,input_dim))
+    #4.训练模型
+    train(train_dateset,input_dim,output_dim)
