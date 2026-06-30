@@ -85,6 +85,26 @@ def train(train_dataset,input_dim,output_dim):
     print(f'\n\n模型参数学习：{model1.state_dict()}\n\n')
     torch.save(model1.state_dict(),'./model/手机价格分类.pth')
 
+def evalaute(test_dataset,input_dim,output_dim):\
+    #创建神经网络
+    model1=phoneprice(input_dim,output_dim)
+    #加载模型参数
+    model1.load_state_dict(torch.load('./model/手机价格分类.pth'))
+    #创建数据加载器
+    test_loader=DataLoader(test_dataset,batch_size=8,shuffle=False)
+    #定义变量
+    correct=0
+    #测试
+    for x,y in test_loader:
+        #模型测试
+        model1.eval()
+        #模型预测
+        y_pred=model1(x)
+        print(y_pred)
+        #根据加权求和，获取预测结果
+        y_pred=torch.argmax(y_pred,dim=1)
+        print(f'y_pred:{y_pred}')
+
 
 if __name__ == '__main__':
     #1.创建数据集
@@ -95,3 +115,5 @@ if __name__ == '__main__':
     #summary(model,input_size=(16,input_dim))
     #4.训练模型
     train(train_dateset,input_dim,output_dim)
+    #模型的测试
+    evalaute(test_dataset,input_dim,output_dim)
